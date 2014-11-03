@@ -6,10 +6,20 @@ var	methodOverride = require('method-override');
 var	mongoose = require('mongoose');
 
 
-mongoose.connect('mongodb://localhost/user', function(err, res){
-    if(err) throw err;
-    console.log('Connected to DB');
-});
+if( process.env.NODE_ENV == "production"){
+
+	mongoose.connect(process.env.MONGOLAB_URI, function(err, res){
+	    if(err) throw err;
+	    console.log('Connected to DB');
+	});	
+
+}else{
+	mongoose.connect('mongodb://localhost/user', function(err, res){
+	    if(err) throw err;
+	    console.log('Connected to DB');
+	});	
+}
+
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
@@ -40,7 +50,7 @@ users.route('/user/:id')
 app.use('/', users);
 
 
-app.listen(3000, function(){
+app.listen(process.env.PORT || 3000, function(){
     console.log("node server running on http://localhost:3000");
 });
 
